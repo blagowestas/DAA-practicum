@@ -1,6 +1,5 @@
-#include <cstdio>
+#include <iostream>
 #include <bits/stdc++.h>
-#include <limits.h>
 using namespace std;
 
 const int MAX_EQUIPMENT = int(1e6);
@@ -10,17 +9,17 @@ struct edge
     int equipment, time, to; 
 };
 
-vector<edge> g[int(1e5)];
+vector<edge> g[int(1e5)]; 
 int equipment[int(1e5)];
 int t[int(1e5)];
 bool used[int(1e5)];
 
 
-void all_paths_aux(int current_node, int& goal_node, int& result, int& record)
+void find_min_equipment_aux(int current_node, int& goal_node, int& result, int& record)
 {
-   used[current_node]=true;
+   used[current_node]=true; //this node is used in the current path
 
-    if(current_node == goal_node )
+    if(current_node == goal_node)
     {
         result = min(result, equipment[current_node]);
     }
@@ -31,21 +30,20 @@ void all_paths_aux(int current_node, int& goal_node, int& result, int& record)
         { 
             equipment[neib.to] = max(neib.equipment, equipment[current_node]);
             t[neib.to] = neib.time + t[current_node];
-            if(t[neib.to]<=record && equipment[neib.to]<=result)
-                all_paths_aux(neib.to, goal_node, result, record);
+            if(t[neib.to]<=record && equipment[neib.to]<=result)  // if we've found way with lower equipment, or we are out of time, don't need to check this path
+                find_min_equipment_aux(neib.to, goal_node, result, record);
         }
     }
 
-    used[current_node]=false;
+    used[current_node]=false; // we are done with the current path, so we can use this node in future path
 }
 
-int all_paths(int start, int end, int record)
+int find_min_equipment(int start, int end, int record)
 {
-    vector<int> current_path;
     int result=MAX_EQUIPMENT;
     equipment[start]=0;
     t[start]=0;
-    all_paths_aux(start, end, result, record);
+    find_min_equipment_aux(start, end, result, record);
     
     if(result==MAX_EQUIPMENT)
         return -1;
@@ -55,9 +53,6 @@ int all_paths(int start, int end, int record)
 
 int main()
 {
-
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
 
     int rocks_number, bridges_number, record;
     
@@ -69,11 +64,11 @@ int main()
     for(int i=0; i<bridges_number; ++i)
     {
         scanf("%d %d %d %d",&start,&new_edge.to,&new_edge.equipment,&new_edge.time);    
-        if(new_edge.time <= record)
+        if(new_edge.time <= record) //this edge is out of limit, we don't need it
             g[start].push_back(new_edge);
     }
 
-    printf("%d", all_paths(1, rocks_number, record));
+    printf("%d", find_min_equipment(1, rocks_number, record));
     
     return 0;
 }
