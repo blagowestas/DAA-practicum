@@ -12,12 +12,10 @@ bool is_member(int elem, vector<int> all)
     return false;
 }
 
-
 struct edge
 {
     int equipment, time, to; 
 };
-
 
 
 vector<edge> g[int(1e6)+5];
@@ -38,7 +36,7 @@ void all_paths_aux(int current_node, int goal_node, vector<int>& current_path, v
 
     for (edge neib: g[current_node])
     {
-        if(!is_member(neib.to, current_path)) //за да не зациклим
+        if(!is_member(neib.to, current_path))
         { 
             equipment[neib.to] = max(neib.equipment, equipment[current_node]);
             t[neib.to] = neib.time + t[current_node];
@@ -75,19 +73,6 @@ int get_min(vector<int> v)
 
     return min_el;
 }
-
-
-
-// }
-
- //ako namirame wsichki putichta, koito stawat po sekundi i sledim ekipirowkata postoqnno? na wsqka stupka sledim dali ekipirowkata e po-malka ot dosegashnata nai-optimalna 
- //pri purwiq put shte e maks_int, ii sledim i dali wse oshte e po-malka ot rekorda za wremeto. spirame tekushtiq put,ako stane poweche ekipirowkata ili wremeto ... 
- //trqbwa dfs i obhojdane za ws putishta, a ne dijkstra.. 
- //nai-loshiq sluchai e da namerim ws putishya, ne znma kolko e optimalno .. ama ako ne stawa, moje i da prowerqwame  w nachaloto dali ima wuzmojnost sprqmo wremeto na ws dadeni
-
-
-
-
 
 int main()
 {
