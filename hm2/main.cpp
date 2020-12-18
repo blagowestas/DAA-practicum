@@ -1,15 +1,11 @@
-#include <iostream>
-#include <vector>
-#include <queue>
+#include <cstdio>
+#include <bits/stdc++.h>
+#include <limits.h>
 using namespace std;
 
 bool is_member(int elem, vector<int> all)
 {
-    for(auto x: all)
-        if(x==elem)
-        return true;
-
-    return false;
+   return find(all.begin(), all.end(), elem)!= all.end();   
 }
 
 struct edge
@@ -18,11 +14,9 @@ struct edge
 };
 
 
-vector<edge> g[int(1e6)+5];
-int used[int(1e6)+5];
-int parrent[int(1e6)+5];
-int equipment[int(1e6)+5];
-int t[int(1e6)+5];
+vector<edge> g[int(1e5)];
+int equipment[int(1e5)];
+int t[int(1e5)];
 
 
 void all_paths_aux(int current_node, int goal_node, vector<int>& current_path, vector<int>& paths, int& record)
@@ -77,21 +71,38 @@ int get_min(vector<int> v)
 int main()
 {
 
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
     int rocks_number, bridges_number, record;
     
-    cin>> rocks_number >> bridges_number >> record;
+    scanf("%d %d %d",&rocks_number,&bridges_number,&record);
+
 
     int start;
     edge new_edge;
 
     for(int i=0; i<bridges_number; ++i)
     {
-        cin >> start >> new_edge.to >> new_edge.equipment >> new_edge.time;       
+        scanf("%d %d %d %d",&start,&new_edge.to,&new_edge.equipment,&new_edge.time);    
         g[start].push_back(new_edge);
     }
 
-    cout << get_min(all_paths(1, rocks_number, record));
+    printf("%d",get_min(all_paths(1, rocks_number, record)));
     
     return 0;
 
 }
+
+// 7 11 42
+// 1 3 7 11
+// 3 1 7 13
+// 1 2 3 3
+// 1 4 13 1
+// 6 1 14 8
+// 4 6 1 7
+// 2 4 1 13
+// 2 6 4 20
+// 3 5 2 5
+// 5 6 6 4
+// 6 7 5 20
