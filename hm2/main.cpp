@@ -3,70 +3,55 @@
 #include <limits.h>
 using namespace std;
 
-bool is_member(int elem, vector<int> all)
-{
-   return find(all.begin(), all.end(), elem)!= all.end();   
-}
+const int MAX_EQUIPMENT = int(1e6);
 
 struct edge
 {
     int equipment, time, to; 
 };
 
-
 vector<edge> g[int(1e5)];
 int equipment[int(1e5)];
 int t[int(1e5)];
+bool used[int(1e5)];
 
 
-void all_paths_aux(int current_node, int goal_node, vector<int>& current_path, vector<int>& paths, int& record)
+void all_paths_aux(int current_node, int& goal_node, int& result, int& record)
 {
-    current_path.push_back(current_node);
+   used[current_node]=true;
 
     if(current_node == goal_node )
     {
-        paths.push_back(equipment[current_node]);
+        result = min(result, equipment[current_node]);
     }
 
     for (edge neib: g[current_node])
     {
-        if(!is_member(neib.to, current_path))
+        if(!used[neib.to])
         { 
             equipment[neib.to] = max(neib.equipment, equipment[current_node]);
             t[neib.to] = neib.time + t[current_node];
-            if(t[neib.to]<=record)
-                all_paths_aux(neib.to, goal_node, current_path, paths, record);
+            if(t[neib.to]<=record && equipment[neib.to]<=result)
+                all_paths_aux(neib.to, goal_node, result, record);
         }
     }
 
-    current_path.pop_back();
+    used[current_node]=false;
 }
 
-vector<int> all_paths(int start, int end, int record)
+int all_paths(int start, int end, int record)
 {
     vector<int> current_path;
-    vector<int> paths;
+    int result=MAX_EQUIPMENT;
     equipment[start]=0;
     t[start]=0;
-    all_paths_aux(start, end, current_path, paths, record);
-    return paths;
-}
-
-
-
-int get_min(vector<int> v)
-{
-    if(v.empty())
-        return -1;
+    all_paths_aux(start, end, result, record);
     
-    int min_el = v[0];
-    for(int i=1; i<v.size(); ++i)
-    {
-        min_el = min(min_el, v[i]);
-    }
-
-    return min_el;
+    if(result==MAX_EQUIPMENT)
+        return -1;
+     return result;
 }
+
 
 int main()
 {
@@ -78,20 +63,19 @@ int main()
     
     scanf("%d %d %d",&rocks_number,&bridges_number,&record);
 
-
     int start;
     edge new_edge;
 
     for(int i=0; i<bridges_number; ++i)
     {
         scanf("%d %d %d %d",&start,&new_edge.to,&new_edge.equipment,&new_edge.time);    
-        g[start].push_back(new_edge);
+        if(new_edge.time <= record)
+            g[start].push_back(new_edge);
     }
 
-    printf("%d",get_min(all_paths(1, rocks_number, record)));
+    printf("%d", all_paths(1, rocks_number, record));
     
     return 0;
-
 }
 
 // 7 11 42
@@ -106,3 +90,7 @@ int main()
 // 3 5 2 5
 // 5 6 6 4
 // 6 7 5 20
+
+// 2 2 3
+// 1 2 3 5
+// 1 2 1 9
