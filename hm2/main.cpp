@@ -26,7 +26,7 @@ void find_min_equipment_aux(int current_node, int& goal_node, int& result, int& 
 
     for (edge neib: g[current_node])
     {
-        if(!used[neib.to])
+        if(!used[neib.to]) //if current node is used in current path, we have cycle
         { 
             equipment[neib.to] = max(neib.equipment, equipment[current_node]);
             t[neib.to] = neib.time + t[current_node];
@@ -73,6 +73,9 @@ int main()
     return 0;
 }
 
+
+
+//input examples:
 // 7 11 42
 // 1 3 7 11
 // 3 1 7 13
