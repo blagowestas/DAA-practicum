@@ -14,7 +14,6 @@ int equipment[int(1e5)];
 int t[int(1e5)];
 bool used[int(1e5)];
 
-
 void find_min_equipment_aux(int current_node, int& goal_node, int& result, int& record)
 {
    used[current_node]=true; //this node is used in the current path
@@ -23,15 +22,17 @@ void find_min_equipment_aux(int current_node, int& goal_node, int& result, int& 
     {
         result = min(result, equipment[current_node]);
     }
-
-    for (edge neib: g[current_node])
+    else 
     {
-        if(!used[neib.to]) //if current node is used in current path, we have cycle
-        { 
-            equipment[neib.to] = max(neib.equipment, equipment[current_node]);
-            t[neib.to] = neib.time + t[current_node];
-            if(t[neib.to]<=record && equipment[neib.to]<=result)  // if we've found way with lower equipment, or we are out of time, don't need to check this path
-                find_min_equipment_aux(neib.to, goal_node, result, record);
+        for (edge neib: g[current_node])
+        {
+            if(!used[neib.to]) //if current node is used in current path, we have cycle
+            {
+                equipment[neib.to] = max(neib.equipment, equipment[current_node]);
+                t[neib.to] = neib.time + t[current_node];
+                if(t[neib.to]<=record && equipment[neib.to]<result)  // if we've found way with lower equipment, or we are out of time, don't need to check this path
+                    find_min_equipment_aux(neib.to, goal_node, result, record);
+            }
         }
     }
 
@@ -76,6 +77,7 @@ int main()
 
 
 //input examples:
+
 // 7 11 42
 // 1 3 7 11
 // 3 1 7 13
@@ -87,8 +89,8 @@ int main()
 // 2 6 4 20
 // 3 5 2 5
 // 5 6 6 4
-// 6 7 5 20
+// 6 7 5 20 -> 7
 
 // 2 2 3
 // 1 2 3 5
-// 1 2 1 9
+// 1 2 1 9 -> -1
